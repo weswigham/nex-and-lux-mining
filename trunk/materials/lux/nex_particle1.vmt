@@ -1,0 +1,5 @@
+"Sprite"
+{
+	"$basetexture" "lux/nex_particle1"
+	"$translucent" 1
+}
