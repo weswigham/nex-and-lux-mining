@@ -1,0 +1,11 @@
+"AddonInfo"
+{
+	"name"				"Nex Mining"
+	"version"			"Alpha"
+	"up_date"			"SVN Revision Date"
+	"author_name"			"Paradukes, SLYFo, Levybreak"
+	"author_email"			"-"
+	"author_url"			"-"
+	"info"				"Nex Mining for LS3."
+	"override"			"0"
+}
