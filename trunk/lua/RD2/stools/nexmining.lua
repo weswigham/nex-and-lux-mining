@@ -41,8 +41,8 @@ end
 TOOL.Devices = {
 	resource_storage = {
 		Name	= "Resource Storage",
-		type	= "resource_storage",
-		class	= "resource_storage",
+		type	= "nex_resource_storage",
+		class	= "nex_resource_storage",
 		func	= resource_storage_func,
 		devices = {
 			normal = {
@@ -52,6 +52,6 @@ TOOL.Devices = {
 				legacy	= false, --these two vars must be defined per ent as the old tanks (defined in external file) require different values
 			},
 		},
-		['class'] = "resource_storage",
+		['class'] = "nex_resource_storage",
 	},
 }
