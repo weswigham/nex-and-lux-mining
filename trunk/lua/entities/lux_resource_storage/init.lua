@@ -37,13 +37,27 @@ function ENT:TriggerInput(iname, value)
 end
 
 function ENT:Damage()
-	if (self.damaged == 0) then self.damaged = 1 end
+	if (self.damaged == 0) then 
+		self.damaged = 1 
+		if not self.gascloud or not self.gascloud:IsValid() then
+			local mins = self:OBBMins()*3
+			local maxs = self:OBBMaxs()*3
+			local ent = ents.Create("gas_cloud")
+			ent:SetPos(self:GetPos())
+			ent:SetCloudBounds(mins,maxs)
+			ent:SetDamageAmts(-6,-1)
+			ent:SetType("lux")
+			ent:Spawn()
+			self.gascloud = ent
+		end
+	end
 end
 
 function ENT:Repair()
 	self.BaseClass.Repair(self)
 	self.Entity:SetColor(255, 255, 255, 255)
 	self.damaged = 0
+	if self.gascloud and self.gascloud:IsValid() then self.gascloud:Remove() end
 end
 
 function ENT:Destruct()
@@ -53,30 +67,27 @@ function ENT:Destruct()
 end
 
 function ENT:OnRemove()
-
+	if self.gascloud and self.gascloud:IsValid() then self.gascloud:Remove() end
 end
 
 function ENT:Leak()
 	local RD = CAF.GetAddon("Resource Distribution")
 	local nex = RD.GetResourceAmount(self, "liquid lux")
 	if nex > 0 then
+			
 			if (math.random(1, 10) < 8) then
 				local dec = math.random(200, 2000)
 				RD.ConsumeResource(self, "liquid nex", dec)
-				local mins = self:OBBMins()*3
-				local maxs = self:OBBMaxs()*3
-				local efct = EffectData()
-				efct:SetOrigin(mins)
-				efct:SetStart(maxs)
-				efct:SetEntity(self)
-				util.Effect("lux_cloud",efct)
-				local entstodamage = ents.FindInBox(self:LocalToWorld(mins),self:LocalToWorld(maxs))
-				for k,v in pairs(entstodamage) do
-					if v:GetClass() == "nex_resource_storage" and (v.damaged == 1 or v.vent) then
-						v:TakeDamage(math.random(10,20),self:GetOwner(),self)
-					else
-						v:TakeDamage(math.random(-6,-1),self:GetOwner(),self)
-					end
+				if not self.gascloud or not self.gascloud:IsValid() then
+					local mins = self:OBBMins()*3
+					local maxs = self:OBBMaxs()*3
+					local ent = ents.Create("gas_cloud")
+					ent:SetPos(self:GetPos())
+					ent:SetCloudBounds(mins,maxs)
+					ent:SetDamageAmts(-6,-1)
+					ent:SetType("lux")
+					ent:Spawn()
+					self.gascloud = ent
 				end
 			end
 	end
@@ -87,6 +98,8 @@ function ENT:Think()
 	self.BaseClass.Think(self)
 	if ((self.damaged == 1 or self.vent)) then
 		self:Leak()
+	elseif self.gascloud and self.gascloud:IsValid() then
+		self.gascloud:Remove()
 	end
 	if not (WireAddon == nil) then
 		self:UpdateWireOutput()
