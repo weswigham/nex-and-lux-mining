@@ -77,7 +77,7 @@ function ENT:Leak()
 			
 			if (math.random(1, 10) < 8) then
 				local dec = math.random(200, 2000)
-				RD.ConsumeResource(self, "liquid nex", dec)
+				RD.ConsumeResource(self, "liquid lux", dec)
 				if not self.gascloud or not self.gascloud:IsValid() then
 					local mins = self:OBBMins()*3
 					local maxs = self:OBBMaxs()*3
