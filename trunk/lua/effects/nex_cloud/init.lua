@@ -14,6 +14,7 @@
  	self.vEnd = data:GetStart() --Maxs
 	self.Ent = data:GetEntity()
 	
+	if not self.Ent or not self.Ent:IsValid() then return end
 	self.emitter = ParticleEmitter( self.vOffset )
 	local scount = math.random(10,30)
 		for i = 1, scount do
