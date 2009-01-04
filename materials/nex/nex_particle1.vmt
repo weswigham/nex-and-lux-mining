@@ -1,5 +1,6 @@
-"Sprite"
+"UnlitGeneric"
 {
 	"$basetexture" "nex/nex_particle1"
-	"$translucent" 1
+	"$translucent"	1
+	"$selfillum"	1
 }
