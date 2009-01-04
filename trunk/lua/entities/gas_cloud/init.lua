@@ -20,15 +20,15 @@ function ENT:Think()
 	for k,v in pairs(entstodamage) do
 		if self.type == "nex" then
 			if v:GetClass() == "lux_resource_storage" and (v.damaged == 1 or v.vent) then
-				v:TakeDamage(math.random(10,20),self:GetOwner(),self)
+				v:TakeDamage(math.random(self.damage_low*10,self.damage_high*11),self:GetOwner(),self)
 			else
-				v:TakeDamage(math.random(1,6),self:GetOwner(),self)
+				v:TakeDamage(math.random(self.damage_low,self.damage_high),self:GetOwner(),self)
 			end
 		else
 			if v:GetClass() == "nex_resource_storage" and (v.damaged == 1 or v.vent) then
-				v:TakeDamage(math.random(10,20),self:GetOwner(),self)
+				v:TakeDamage(math.random(self.damage_low*10,self.damage_high*11),self:GetOwner(),self)
 			else
-				v:TakeDamage(math.random(-6,-1),self:GetOwner(),self)
+				v:TakeDamage(math.random(self.damage_low,self.damage_high),self:GetOwner(),self)
 			end
 		end
 	end
@@ -44,6 +44,7 @@ function ENT:CheckBounds()
 			end
 		end
 	end
+	return false
 end 
 
 function ENT:CompareBounds(ent)
