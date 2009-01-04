@@ -37,7 +37,7 @@ function ENT:Think()
 			if v:GetClass() == "nex_resource_storage" and (v.damaged == 1 or v.vent) then
 				v:TakeDamage(math.random(self.damage_low*10,self.damage_high*11),self:GetOwner(),self)
 			else
-				v:SetHealth(math.Clamp(v:GetHealth()-math.random(self.damage_low,self.damage_high),0,v:GetMaxHealth()))
+				v:SetHealth(math.Clamp(v:Health()-math.random(self.damage_low,self.damage_high),0,v:GetMaxHealth()))
 			end
 		end
 	end
