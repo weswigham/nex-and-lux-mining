@@ -1,13 +1,22 @@
 AddCSLuaFile( "shared.lua" )
+AddCSLuaFile( "cl_init.lua" )
 
 include('shared.lua')
 
 function ENT:Initialize()
+--[[
 	if not self.type then self.type = "nex" end
 	if not self.damage_low then self.damage_low = 1 end
 	if not self.damage_high then self.damage_high = 6 end
 	if not self.maxs then self.maxs = Vector(0,0,0) end
-	if not self.mins then self.mins = Vector(0,0,0) end
+	if not self.mins then self.mins = Vector(0,0,0) end]]
+	self:SetModel("models/props_combine/combine_mine01.mdl")
+	local phys = self:GetPhysicsObject()
+	if phys and phys:IsValid() then
+		phys:EnableCollisions(false)
+		phys:EnableGravity(false)
+	end
+	self:SetNoDraw(true)
 end 
 
 function ENT:Think()
@@ -28,7 +37,7 @@ function ENT:Think()
 			if v:GetClass() == "nex_resource_storage" and (v.damaged == 1 or v.vent) then
 				v:TakeDamage(math.random(self.damage_low*10,self.damage_high*11),self:GetOwner(),self)
 			else
-				v:TakeDamage(math.random(self.damage_low,self.damage_high),self:GetOwner(),self)
+				v:SetHealth(math.Clamp(v:GetHealth()-math.random(self.damage_low,self.damage_high),0,v:GetMaxHealth()))
 			end
 		end
 	end

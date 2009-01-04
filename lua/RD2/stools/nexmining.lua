@@ -8,7 +8,7 @@ TOOL.ClassName			= "nex_mining"
 TOOL.DevSelect			= true
 TOOL.CCVar_type			= "mine"
 TOOL.CCVar_sub_type		= "normal"
-TOOL.CCVar_model		= "models/props_trainstation/TrackLight01.mdl"
+TOOL.CCVar_model		= "models/ce_ls3additional/resource_cache/resource_cache_large.mdl"
 
 TOOL.Limited			= true
 TOOL.LimitName			= "nex_mining"
@@ -28,7 +28,7 @@ function TOOL:GetExtraCCVars()
 	return Extra_Data
 end
 
-local function resource_storage_func(ent,type,sub_type,devinfo,Extra_Data,ent_extras)
+local function nex_resource_storage_func(ent,type,sub_type,devinfo,Extra_Data,ent_extras)
 	local mass = 100
 	local maxhealth = 100
 	local phys = ent:GetPhysicsObject()
@@ -38,7 +38,7 @@ local function resource_storage_func(ent,type,sub_type,devinfo,Extra_Data,ent_ex
 	return mass, maxhealth
 end
 
-local function resource_storage_func(ent,type,sub_type,devinfo,Extra_Data,ent_extras)
+local function lux_resource_storage_func(ent,type,sub_type,devinfo,Extra_Data,ent_extras)
 	local mass = 100
 	local maxhealth = 100
 	local phys = ent:GetPhysicsObject()
@@ -49,11 +49,11 @@ local function resource_storage_func(ent,type,sub_type,devinfo,Extra_Data,ent_ex
 end
 
 TOOL.Devices = {
-	resource_storage = {
+	nex_resource_storage = {
 		Name	= "Nex Resource Storage",
-		type	= "resource_storage",
+		type	= "nex_resource_storage",
 		class	= "nex_resource_storage",
-		func	= resource_storage_func,
+		func	= nex_resource_storage_func,
 		devices = {
 			normal = {
 				Name	= "Default",
@@ -72,17 +72,17 @@ TOOL.Devices = {
 	},
 	lux_resource_storage = {
 		Name	= "Lux Resource Storage",
-		type	= "resource_storage",
+		type	= "lux_resource_storage",
 		class	= "lux_resource_storage",
 		func	= lux_resource_storage_func,
 		devices = {
-			normal = {
+			normalz = {
 				Name	= "Default",
 				model	= "models/ce_ls3additional/resource_cache/resource_cache_large.mdl",
 				skin	= 0,
 				legacy	= false, --these two vars must be defined per ent as the old tanks (defined in external file) require different values
 			},
-			Custom1 = {
+			Custom1z = {
 				Name	= "CE Small Storage",
 				model	= "models/ce_miningmodels/miningstorage/storage_small.mdl",
 				skin	= 0,

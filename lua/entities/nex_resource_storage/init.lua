@@ -47,6 +47,8 @@ function ENT:Damage()
 			ent:SetCloudBounds(mins,maxs)
 			ent:SetDamageAmts(1,6)
 			ent:SetType("nex")
+			ent.type = "nex"
+			ent:SetParent(self)
 			ent:Spawn()
 			self.gascloud = ent
 		end
@@ -84,7 +86,9 @@ function ENT:Leak()
 					ent:SetPos(self:GetPos())
 					ent:SetCloudBounds(mins,maxs)
 					ent:SetDamageAmts(-6,-1)
-					ent:SetType("lux")
+					ent:SetType("nex")
+					ent.type = "nex"
+					ent:SetParent(self)
 					ent:Spawn()
 					self.gascloud = ent
 				end
