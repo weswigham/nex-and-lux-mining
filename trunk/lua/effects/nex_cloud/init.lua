@@ -7,7 +7,7 @@
  	 
  	// This is how long the spawn effect  
  	// takes from start to finish. 
- 	self.Time = 1
+ 	self.Time = 3
  	self.LifeTime = CurTime() + self.Time 
 	
  	self.vOffset = data:GetOrigin() --Mins
@@ -23,7 +23,7 @@
 				particle:SetVelocity( Vector(0,0,1) * math.Rand(1, 10) )
 				--particle:SetLifeTime( 0 )
 				particle:SetDieTime( math.Rand( 2, 3 ) )
-				particle:SetStartAlpha( math.Rand( 200, 255 ) )
+				particle:SetStartAlpha( math.Rand( 20, 205 ) )
 				particle:SetEndAlpha( 0 )
 				particle:SetStartSize( 40 )
 				particle:SetEndSize( 70 )

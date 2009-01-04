@@ -59,7 +59,7 @@ end
 function ENT:Leak()
 	local RD = CAF.GetAddon("Resource Distribution")
 	local nex = RD.GetResourceAmount(self, "liquid nex")
-	--if nex > 0 then
+	if nex > 0 then
 			if (math.random(1, 10) < 8) then
 				local dec = math.random(200, 2000)
 				RD.ConsumeResource(self, "liquid nex", dec)
@@ -70,8 +70,12 @@ function ENT:Leak()
 				efct:SetStart(maxs)
 				efct:SetEntity(self)
 				util.Effect("nex_cloud",efct)
+				local entstodamage = ents.FindInBox(self:LocalToWorld(mins),self:LocalToWorld(maxs))
+				for k,v in pairs(entstodamage) do
+					v:TakeDamage(math.random(1,6),self:GetOwner(),self)
+				end
 			end
-	--end
+	end
 end
 
 
