@@ -6,7 +6,7 @@ TOOL.DeviceNamePlural	= "Nex Mining Devices"
 TOOL.ClassName			= "nex_mining"
 
 TOOL.DevSelect			= true
-TOOL.CCVar_type			= "nex_mine"
+TOOL.CCVar_type			= "mine"
 TOOL.CCVar_sub_type		= "normal"
 TOOL.CCVar_model		= "models/props_trainstation/TrackLight01.mdl"
 
@@ -40,14 +40,20 @@ end
 
 TOOL.Devices = {
 	resource_storage = {
-		Name	= "Resource Storage",
-		type	= "nex_resource_storage",
+		Name	= "Nex Resource Storage",
+		type	= "resource_storage",
 		class	= "nex_resource_storage",
 		func	= resource_storage_func,
 		devices = {
 			normal = {
 				Name	= "Default",
-				model	= "models/props_trainstation/TrackLight01.mdl", --until we get real models from SLYFo
+				model	= "models/ce_ls3additional/resource_cache/resource_cache_large.mdl",
+				skin	= 0,
+				legacy	= false, --these two vars must be defined per ent as the old tanks (defined in external file) require different values
+			},
+			Custom1 = {
+				Name	= "CE Small Storage",
+				model	= "models/ce_miningmodels/miningstorage/storage_small.mdl",
 				skin	= 0,
 				legacy	= false, --these two vars must be defined per ent as the old tanks (defined in external file) require different values
 			},
@@ -55,3 +61,4 @@ TOOL.Devices = {
 		['class'] = "nex_resource_storage",
 	},
 }
+
