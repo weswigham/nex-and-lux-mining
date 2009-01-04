@@ -72,7 +72,11 @@ function ENT:Leak()
 				util.Effect("nex_cloud",efct)
 				local entstodamage = ents.FindInBox(self:LocalToWorld(mins),self:LocalToWorld(maxs))
 				for k,v in pairs(entstodamage) do
-					v:TakeDamage(math.random(1,6),self:GetOwner(),self)
+					if v:GetClass() == "lux_resource_storage" and (v.damaged == 1 or v.vent) then
+						v:TakeDamage(math.random(10,20),self:GetOwner(),self)
+					else
+						v:TakeDamage(math.random(1,6),self:GetOwner(),self)
+					end
 				end
 			end
 	end
