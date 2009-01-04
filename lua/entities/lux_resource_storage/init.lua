@@ -39,18 +39,23 @@ end
 function ENT:Damage()
 	if (self.damaged == 0) then 
 		self.damaged = 1 
-		if not self.gascloud or not self.gascloud:IsValid() then
-			local mins = self:OBBMins()*3
-			local maxs = self:OBBMaxs()*3
-			local ent = ents.Create("gas_cloud")
-			ent:SetPos(self:GetPos())
-			ent:SetCloudBounds(mins,maxs)
-			ent:SetDamageAmts(-6,-1)
-			ent:SetType("lux")
-			ent.type = "lux"
-			ent:SetParent(self)
-			ent:Spawn()
-			self.gascloud = ent
+		local RD = CAF.GetAddon("Resource Distribution")
+		local lux = RD.GetResourceAmount(self, "liquid lux")
+		if lux > 0 then
+			if not self.gascloud or not self.gascloud:IsValid() then
+				local mins = self:OBBMins()*3
+				local maxs = self:OBBMaxs()*3
+				local ent = ents.Create("gas_cloud")
+				ent:SetPos(self:GetPos())
+				ent:SetCloudBounds(mins,maxs)
+				ent:SetDamageAmts(-6,-1)
+				ent:SetType("lux")
+				ent.type = "lux"
+				ent:SetParent(self)
+				ent:Spawn()
+				self.gascloud = ent
+				ent.dependant = self
+			end
 		end
 	end
 end
@@ -75,7 +80,7 @@ end
 function ENT:Leak()
 	local RD = CAF.GetAddon("Resource Distribution")
 	local nex = RD.GetResourceAmount(self, "liquid lux")
-	if nex > 0 then
+	--if nex > 0 then
 			
 			if (math.random(1, 10) < 8) then
 				local dec = math.random(200, 2000)
@@ -92,9 +97,10 @@ function ENT:Leak()
 					ent:SetParent(self)
 					ent:Spawn()
 					self.gascloud = ent
+					ent.dependant = self
 				end
 			end
-	end
+	--end
 end
 
 

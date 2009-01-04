@@ -35,12 +35,26 @@ function ENT:Think()
 			end
 		else
 			if v:GetClass() == "nex_resource_storage" and (v.damaged == 1 or v.vent) then
-				v:TakeDamage(math.random(self.damage_low*10,self.damage_high*11),self:GetOwner(),self)
+				v:TakeDamage(math.random(self.damage_high*-11,self.damage_low*-10),self:GetOwner(),self)
 			else
 				v:SetHealth(math.Clamp(v:Health()-math.random(self.damage_low,self.damage_high),0,v:GetMaxHealth()))
 			end
 		end
 	end
+	local dosomething,ent = self:CheckBounds()
+	if dosomething then
+		local efct = EffectData()
+		efct:SetOrigin(self:GetPos())
+		efct:SetScale(5)
+		efct:SetRadius(math.abs(self.mins:Dot(self.maxs)))
+		efct:SetEntity(self)
+		util.Effect("Explosion",efct)
+		if ent:GetParent() and ent:GetParent():IsValid() then
+			ent:GetParent():Remove()
+		end
+		self:GetParent():Remove()
+	end
+	self:NextThink(CurTime()+0.8)
 end 
 
 function ENT:CheckBounds()
@@ -48,7 +62,7 @@ function ENT:CheckBounds()
 		if v != self then
 			if (self.type == "nex" and v.type == "lux") or (self.type == "lux" and v.type == "nex") then
 				if self:CompareBounds(v) == true then
-					return true
+					return true,v
 				end
 			end
 		end
@@ -57,23 +71,24 @@ function ENT:CheckBounds()
 end 
 
 function ENT:CompareBounds(ent)
-	if (self.maxs >= ent.maxs and self.mins <= ent.mins) or (self.maxs <= ent.maxs and self.mins >= ent.mins) then return true end --One is entirely within the other
-	for k,v in pairs(ent:GetAllCorners()) do
-		if (self.maxs >= v and v <= ent.mins) then return true end
+	for k,v in pairs(ent:GetAllWorldCorners()) do
+		if (self:LocalToWorld(self.maxs) >= v and v >= self:LocalToWorld(self.mins)) then return true end
 	end
 	return false
 end
 
-function ENT:GetAllCorners()
+function ENT:GetAllWorldCorners()
+	local worldmaxs = self:LocalToWorld(self.maxs)
+	local worldmins = self:LocalToWorld(self.mins)
 	local selfcorners = {}
-	table.insert(selfcorners, self.maxs)
-	table.insert(selfcorners, Vector(self.maxs.x,self.maxs.y,self.mins.z))
-	table.insert(selfcorners, Vector(self.maxs.x,self.mins.y,self.mins.z))
-	table.insert(selfcorners, Vector(self.mins.x,self.maxs.y,self.mins.z))
-	table.insert(selfcorners, Vector(self.mins.x,self.mins.y,self.maxs.z))
-	table.insert(selfcorners, Vector(self.mins.x,self.maxs.y,self.maxs.z))
-	table.insert(selfcorners, Vector(self.maxs.x,self.mins.y,self.maxs.z))
-	table.insert(selfcorners, self.mins)
+	table.insert(selfcorners, worldmaxs)
+	table.insert(selfcorners, Vector(worldmaxs.x,worldmaxs.y,worldmins.z))
+	table.insert(selfcorners, Vector(worldmaxs.x,worldmins.y,worldmins.z))
+	table.insert(selfcorners, Vector(worldmins.x,worldmaxs.y,worldmins.z))
+	table.insert(selfcorners, Vector(worldmins.x,worldmins.y,worldmaxs.z))
+	table.insert(selfcorners, Vector(worldmins.x,worldmaxs.y,worldmaxs.z))
+	table.insert(selfcorners, Vector(worldmaxs.x,worldmins.y,worldmaxs.z))
+	table.insert(selfcorners, worldmins)
 	return selfcorners
 end
 
@@ -89,4 +104,9 @@ end
 
 function ENT:SetType(typez)
 	self.type = typez
+end 
+
+local Vector = FindMetaTable("Vector") 
+function Vector.__lt(op1,op2) --I hope i got this right, lol.
+	return (op1.x < op2.x and op1.y < op2.y and op1.z < op2.z)
 end 
