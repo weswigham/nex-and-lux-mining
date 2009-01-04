@@ -10,16 +10,17 @@
  	self.Time = 1
  	self.LifeTime = CurTime() + self.Time 
 	
- 	self.vOffset = data:GetOrigin()
- 	self.vAng = data:GetAngle()
+ 	self.vOffset = data:GetOrigin() --Mins
+ 	self.vEnd = data:GetStart() --Maxs
+	self.Ent = data:GetEntity()
 	
 	self.emitter = ParticleEmitter( self.vOffset )
-	local scount = math.random(1,3)
-		for i = 0, scount do
+	local scount = math.random(10,30)
+		for i = 1, scount do
 		
-			local particle = self.emitter:Add( "nex/nex_particle1", self.vOffset )
+			local particle = self.emitter:Add( "nex/nex_particle1", self.Ent:GetPos()+Vector(math.random(self.vOffset.x,self.vEnd.x),math.random(self.vOffset.y,self.vEnd.y),math.random(self.vOffset.z,self.vEnd.z)) )
 			if (particle) then
-				particle:SetVelocity( self.vAng:Forward() * math.Rand(-100, -10) )
+				particle:SetVelocity( Vector(0,0,1) * math.Rand(1, 10) )
 				--particle:SetLifeTime( 0 )
 				particle:SetDieTime( math.Rand( 2, 3 ) )
 				particle:SetStartAlpha( math.Rand( 200, 255 ) )
@@ -28,15 +29,11 @@
 				particle:SetEndSize( 70 )
 				particle:SetRoll( math.Rand(0, 360) )
 				particle:SetRollDelta( math.Rand(-0.2, 0.2) )
-				particle:SetColor( 190 , 190 , 190 )
+				particle:SetColor( 255 , 255 , 255 )
 			end
-			
-			local vec = VectorRand()
-			
 		end
-		
 	self.emitter:Finish()
-	
+
  	self.Entity:SetPos( self.vOffset )  
  end 
    
