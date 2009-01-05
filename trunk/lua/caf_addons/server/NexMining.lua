@@ -8,7 +8,7 @@ local RD = {}
 function RD.__Construct()
 	if status then return false, "Already Active!" end
 	if not CAF.GetAddon("Resource Distribution") or not CAF.GetAddon("Resource Distribution").GetStatus() then return false, "Resource Distribution is Required and needs to be Active!" end
-		return true , "Nex Mining Activated"
+	return true , "Nex Mining Activated"
 end
 
 /**

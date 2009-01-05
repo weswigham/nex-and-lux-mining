@@ -7,7 +7,7 @@ local status = false
 	The Constructor for this Custom Addon Class
 */
 function RD.__Construct()
-	return false , "No Implementation yet"
+	return true , "No Implementation yet"
 end
 
 /**
