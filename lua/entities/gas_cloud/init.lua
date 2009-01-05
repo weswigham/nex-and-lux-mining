@@ -4,12 +4,12 @@ AddCSLuaFile( "cl_init.lua" )
 include('shared.lua')
 
 function ENT:Initialize()
---[[
+
 	if not self.type then self.type = "nex" end
 	if not self.damage_low then self.damage_low = 1 end
 	if not self.damage_high then self.damage_high = 6 end
 	if not self.maxs then self.maxs = Vector(0,0,0) end
-	if not self.mins then self.mins = Vector(0,0,0) end]]
+	if not self.mins then self.mins = Vector(0,0,0) end
 	self:SetModel("models/props_combine/combine_mine01.mdl")
 	local phys = self:GetPhysicsObject()
 	if phys and phys:IsValid() then
@@ -58,6 +58,20 @@ function ENT:Think()
 	self:NextThink(CurTime()+0.8)]]
 end 
 
+function ENT:SetCloudBounds(mins,maxs)
+	self.maxs = maxs
+	self.mins = mins
+end 
+
+function ENT:SetDamageAmts(minz,maxz)
+	self.damage_low = minz
+	self.damage_high = maxz
+end 
+
+function ENT:SetType(typez)
+	self.type = typez
+end 
+
 function ENT:CheckBounds()
 	for k,v in pairs(ents.FindByClass("gas_cloud")) do
 		if v != self then
@@ -78,7 +92,7 @@ function ENT:CompareBounds(ent) --Something is STILL screwed up.
 	return false
 end
 
-function ENT:GetAllWorldCorners()
+function ENT:GetAllWorldCorners() --Most likely here
 	local worldmaxs = self:LocalToWorld(self.maxs)
 	local worldmins = self:LocalToWorld(self.mins)
 	local selfcorners = {}
@@ -93,21 +107,7 @@ function ENT:GetAllWorldCorners()
 	return selfcorners
 end
 
-function ENT:SetCloudBounds(mins,maxs)
-	self.maxs = maxs
-	self.mins = mins
-end 
-
-function ENT:SetDamageAmts(minz,maxz)
-	self.damage_low = minz
-	self.damage_high = maxz
-end 
-
-function ENT:SetType(typez)
-	self.type = typez
-end 
-
-local Vector = FindMetaTable("Vector") 
+local Vector = FindMetaTable("Vector")  --Or in here.
 function Vector.__lt(op1,op2) --I hope i got this right, lol.
 	return (op1.x < op2.x and op1.y < op2.y and op1.z < op2.z)
 end 
