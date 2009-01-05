@@ -80,7 +80,7 @@ end
 function ENT:Leak()
 	local RD = CAF.GetAddon("Resource Distribution")
 	local nex = RD.GetResourceAmount(self, "liquid nex")
-	--if nex > 0 then
+	if nex > 0 then
 			if (math.random(1, 10) < 8) then
 				local dec = math.random(200, 2000)
 				RD.ConsumeResource(self, "liquid nex", dec)
@@ -99,7 +99,7 @@ function ENT:Leak()
 					ent.dependant = self
 				end
 			end
-	--end
+	end
 end
 
 

@@ -41,6 +41,7 @@ function ENT:Think()
 			end
 		end
 	end
+	--[[
 	local dosomething,ent = self:CheckBounds()
 	if dosomething then
 		local efct = EffectData()
@@ -54,7 +55,7 @@ function ENT:Think()
 		end
 		self:GetParent():Remove()
 	end
-	self:NextThink(CurTime()+0.8)
+	self:NextThink(CurTime()+0.8)]]
 end 
 
 function ENT:CheckBounds()
@@ -70,7 +71,7 @@ function ENT:CheckBounds()
 	return false
 end 
 
-function ENT:CompareBounds(ent)
+function ENT:CompareBounds(ent) --Something is STILL screwed up.
 	for k,v in pairs(ent:GetAllWorldCorners()) do
 		if (self:LocalToWorld(self.maxs) >= v and v >= self:LocalToWorld(self.mins)) then return true end
 	end
