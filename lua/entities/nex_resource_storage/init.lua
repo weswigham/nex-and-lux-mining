@@ -90,7 +90,7 @@ function ENT:Leak()
 					local ent = ents.Create("gas_cloud")
 					ent:SetPos(self:GetPos())
 					ent:SetCloudBounds(mins,maxs)
-					ent:SetDamageAmts(-6,-1)
+					ent:SetDamageAmts(1,6)
 					ent:SetType("nex")
 					ent.type = "nex"
 					ent:SetParent(self)
