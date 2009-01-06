@@ -55,6 +55,7 @@ local function arma_nex_resource_storage_func(ent,type,sub_type,devinfo,Extra_Da
 	local vol = phys:GetVolume()
 	vol = math.Round(vol)
 	CAF.GetAddon("Resource Distribution").AddResource(ent, "arma nex", math.Round(vol / 5))
+	ent.arma = true
 	return mass, maxhealth
 end
 
@@ -65,6 +66,7 @@ local function arma_lux_resource_storage_func(ent,type,sub_type,devinfo,Extra_Da
 	local vol = phys:GetVolume()
 	vol = math.Round(vol)
 	CAF.GetAddon("Resource Distribution").AddResource(ent, "arma lux", math.Round(vol / 5))
+	ent.arma = true
 	return mass, maxhealth
 end
 
@@ -75,7 +77,7 @@ local function generic_nonstorage_func(ent,type,sub_type,devinfo,Extra_Data,ent_
 	local phys = ent:GetPhysicsObject()
 	local vol = phys:GetVolume()
 	vol = math.Round(vol)
-	ent.burnRate = math.Clamp(vol/1000,10,90000)
+	ent.burnRate = math.Clamp(vol/500,10,90000)
 	return mass, maxhealth
 end
 
@@ -88,13 +90,13 @@ TOOL.Devices = {
 		devices = {
 			normal = {
 				Name	= "Default",
-				model	= "models/ce_ls3additional/resource_cache/resource_cache_large.mdl",
+				model	= "models/Slyfo/crate_resource_large.mdl",
 				skin	= 0,
 				legacy	= false, --these two vars must be defined per ent as the old tanks (defined in external file) require different values
 			},
 			Custom1 = {
-				Name	= "CE Small Storage",
-				model	= "models/ce_miningmodels/miningstorage/storage_small.mdl",
+				Name	= "SLYFo Small Storage",
+				model	= "models/Slyfo/crate_resource_small.mdl",
 				skin	= 0,
 				legacy	= false, --these two vars must be defined per ent as the old tanks (defined in external file) require different values
 			},
@@ -115,7 +117,7 @@ TOOL.Devices = {
 		devices = {
 			normalz = {
 				Name	= "Default",
-				model	= "models/ce_ls3additional/resource_cache/resource_cache_large.mdl",
+				model	= "models/Slyfo/crate_resource_large.mdl",
 				skin	= 0,
 				legacy	= false, --these two vars must be defined per ent as the old tanks (defined in external file) require different values
 			},
@@ -136,19 +138,19 @@ TOOL.Devices = {
 		devices = {
 			normal = {
 				Name	= "Default",
-				model	= "models/ce_ls3additional/resource_cache/resource_cache_large.mdl",
+				model	= "models/Slyfo/crate_resource_large.mdl",
 				skin	= 0,
 				legacy	= false, --these two vars must be defined per ent as the old tanks (defined in external file) require different values
 			},
 			Custom1 = {
-				Name	= "CE Small Storage",
-				model	= "models/ce_miningmodels/miningstorage/storage_small.mdl",
+				Name	= "SLYFo Small Storage",
+				model	= "models/Slyfo/crate_resource_small.mdl",
 				skin	= 0,
 				legacy	= false, --these two vars must be defined per ent as the old tanks (defined in external file) require different values
 			},
 			SLYFo1 = {
 				Name	= "SLYFo Small Barrel",
-				model	= "models/Slyfo/barrel_unrefined.mdl",
+				model	= "models/Slyfo/barrel_refined.mdl",
 				skin	= 0,
 				legacy	= false, --these two vars must be defined per ent as the old tanks (defined in external file) require different values
 			},
@@ -163,7 +165,7 @@ TOOL.Devices = {
 		devices = {
 			normalz = {
 				Name	= "Default",
-				model	= "models/ce_ls3additional/resource_cache/resource_cache_large.mdl",
+				model	= "models/Slyfo/crate_resource_large.mdl",
 				skin	= 0,
 				legacy	= false, --these two vars must be defined per ent as the old tanks (defined in external file) require different values
 			},
@@ -225,8 +227,8 @@ TOOL.Devices = {
 		func	= generic_nonstorage_func,
 		devices = {
 			large = {
-				Name	= "Large SLYFo Refinery",
-				model	= "models/Slyfo/refinery_large.mdl",
+				Name	= "Medium SLYFo Crate Reactor",
+				model	= "models/Slyfo/crate_reactor.mdl",
 				skin	= 0,
 				legacy	= false, --these two vars must be defined per ent as the old tanks (defined in external file) require different values
 			},

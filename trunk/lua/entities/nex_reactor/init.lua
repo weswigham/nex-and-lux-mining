@@ -93,7 +93,7 @@ end
 
 function ENT:React()
 	local RD = CAF.GetAddon("Resource Distribution")
-	local phys = ent:GetPhysicsObject()
+	local phys = self:GetPhysicsObject()
 	self.lnex = RD.GetResourceAmount(self, "arma nex")
 	self.llux = RD.GetResourceAmount(self, "liquid lux")
 	local lnexRequired = self.burnRate*(phys:GetVolume()/1100)+1

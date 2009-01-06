@@ -93,7 +93,7 @@ end
 
 function ENT:Refine()
 	local RD = CAF.GetAddon("Resource Distribution")
-	local phys = ent:GetPhysicsObject()
+	local phys = self:GetPhysicsObject()
 	self.lnex = RD.GetResourceAmount(self, "liquid nex")
 	local lnexRequired = self.burnRate*(phys:GetVolume()/1100)+1
 	if self.lnex >= lnexRequired then
