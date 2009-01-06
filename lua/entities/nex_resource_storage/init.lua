@@ -40,7 +40,8 @@ function ENT:Damage()
 	if (self.damaged == 0) then 
 		self.damaged = 1 
 		local RD = CAF.GetAddon("Resource Distribution")
-		local lux = RD.GetResourceAmount(self, "liquid lux")
+		local lux = RD.GetResourceAmount(self, "liquid nex")
+		if self.arma and self.arma == true then lux = RD.GetResourceAmount(self, "arma nex") end
 		if lux > 0 then
 			if not self.gascloud or not self.gascloud:IsValid() then
 				local mins = self:OBBMins()*3
@@ -80,10 +81,15 @@ end
 function ENT:Leak()
 	local RD = CAF.GetAddon("Resource Distribution")
 	local nex = RD.GetResourceAmount(self, "liquid nex")
+	if self.arma and self.arma == true then nex = RD.GetResourceAmount(self, "arma nex") end
 	if nex > 0 then
 			if (math.random(1, 10) < 8) then
 				local dec = math.random(200, 2000)
+				if self.arma and self.arma == true then
+				RD.ConsumeResource(self, "arma nex", dec)
+				else
 				RD.ConsumeResource(self, "liquid nex", dec)
+				end
 				if not self.gascloud or not self.gascloud:IsValid() then
 					local mins = self:OBBMins()*3
 					local maxs = self:OBBMaxs()*3
@@ -119,8 +125,15 @@ end
 
 function ENT:UpdateWireOutput()
 	local RD = CAF.GetAddon("Resource Distribution")
+	if self.arma and self.arma == true then
+	local nex = RD.GetResourceAmount(self, "arma nex")
+	local maxnex = RD.GetNetworkCapacity(self, "arma nex")
+	Wire_TriggerOutput(self.Entity, "arma nex", nex)
+	Wire_TriggerOutput(self.Entity, "arma nex", maxnex)
+	else
 	local nex = RD.GetResourceAmount(self, "liquid nex")
 	local maxnex = RD.GetNetworkCapacity(self, "liquid nex")
 	Wire_TriggerOutput(self.Entity, "liquid nex", nex)
 	Wire_TriggerOutput(self.Entity, "Max liquid nex", maxnex)
+	end
 end 
