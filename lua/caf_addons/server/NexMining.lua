@@ -81,7 +81,7 @@ function RD.GetPosValue(pos)
 	local returnval = nil
 	for k,v in pairs(positions) do
 		if v.pos:Distance(pos) <= v.radius then
-			if returnval then 
+			if returnval and (returnval != nil) then 
 				if v.priority > returnval.priority then
 					returnval = v
 				end
