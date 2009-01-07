@@ -89,6 +89,18 @@ function RD.GetPosValue(pos)
 	end
 end
 
+function RD.GetNearestPos(pos)
+	local dist = 999999999999999999
+	local out = nil
+	for k,v in pairs(positions) do
+		if v.pos:Distance(pos) <= dist then 
+			dist = v.pos:Distance(pos) 
+			out = v
+		end
+	end
+	return v
+end
+
 function RD.GetAllPositions()
 	return positions
 end
