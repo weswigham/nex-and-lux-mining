@@ -66,12 +66,6 @@ CAF.RegisterAddon("Nex Mining", RD, "2")
 
 local positions = {}
 function RD.SetPositionValue(pos,radius,priority,value)
-	local RD = CAF.GetAddon("Nex Mining")
-	local ShouldBeNil = RD.GetPosValue(pos)
-	if ShouldBeNil then
-		if positions[tostring(pos)].priority >= priority then return end
-		RD.ClearPosition(ShouldBeNil.pos)
-	end
 		positions[tostring(pos)] = {}
 		positions[tostring(pos)].pos = pos
 		positions[tostring(pos)].radius = radius
@@ -84,9 +78,19 @@ function RD.ClearPosition(pos)
 end
 
 function RD.GetPosValue(pos)
+	local returnval = nil
 	for k,v in pairs(positions) do
-		if v.pos:Distance(pos) <= v.radius then return v end
+		if v.pos:Distance(pos) <= v.radius then
+			if returnval then 
+				if v.priority > returnval.priority then
+					returnval = v
+				end
+			else
+				returnval = v
+			end
+		end
 	end
+	return returnval
 end
 
 function RD.GetNearestPos(pos)
