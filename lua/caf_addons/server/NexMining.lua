@@ -1,13 +1,18 @@
 --[[ Serverside Custom Addon file Base ]]--
 
+AddCSLuaFile("includes/modules/Json.lua")
+AddCSLuaFile("includes/modules/cl_datastream.lua")
+
 local RD = {}
 
+require("datastream")
 /*
 	The Constructor for this Custom Addon Class
 */
 function RD.__Construct()
 	if status then return false, "Already Active!" end
 	if not CAF.GetAddon("Resource Distribution") or not CAF.GetAddon("Resource Distribution").GetStatus() then return false, "Resource Distribution is Required and needs to be Active!" end
+	datastream.Load()
 	return true , "Nex Mining Activated"
 end
 
@@ -71,6 +76,7 @@ function RD.SetPositionValue(pos,radius,priority,value)
 		positions[tostring(pos)].radius = radius
 		positions[tostring(pos)].priority = priority
 		positions[tostring(pos)].value = value
+		return positions[tostring(pos)]
 end
 
 function RD.ClearPosition(pos)
@@ -87,6 +93,7 @@ function RD.ClearPosition(pos)
 end
 
 function RD.GetPosValue(pos)
+	if positions[tostring(pos)] then return positions[tostring(pos)] end
 	local returnval = nil
 	for k,v in pairs(positions) do
 		if v.pos:Distance(pos) <= v.radius then
@@ -103,6 +110,7 @@ function RD.GetPosValue(pos)
 end
 
 function RD.GetNearestPos(pos)
+	if positions[tostring(pos)] then return positions[tostring(pos)] end
 	local dist = 999999999999999999
 	local out = nil
 	for k,v in pairs(positions) do
@@ -111,19 +119,20 @@ function RD.GetNearestPos(pos)
 			out = v
 		end
 	end
-	return v
+	return out
 end
 
 function RD.GetNearestPosWithValue(pos,value)
+	if positions[tostring(pos)] and positions[tostring(pos)].value == value then return positions[tostring(pos)] end
 	local dist = 999999999999999999
 	local out = nil
 	for k,v in pairs(positions) do
-		if v.pos:Distance(pos) <= dist and v.value = value then 
+		if v.pos:Distance(pos) <= dist and v.value == value then 
 			dist = v.pos:Distance(pos) 
 			out = v
 		end
 	end
-	return v
+	return out
 end
 
 function RD.GetAllPositions()
@@ -135,7 +144,7 @@ function RD.GetAllPositionsString()
 	local strg = util.TableToKeyValues(sanitizd)
 	return strg
 end 
-
+--[[
 function RD.SendPosDataToClient(ply,pos) --mm...debating weather it should send value or not...perhaps ifit's not a table...and priority shouldn't be needed clientside...so...
 	if not ply.NexEnabled or ply.NexEnabled == false then return false end
 	local datatosend = RD.GetPosValue(pos)
@@ -160,9 +169,46 @@ function RD.SendPosDataToClient(ply,pos) --mm...debating weather it should send 
 	end
 	umsg.End()
 	return true
-end 
+end ]]
 
-function ToggleNexMiningEnable(ply,cmds,args)
+function RD.SendPosDataToClient(ply,pos) --mm...debating weather it should send value or not...perhaps ifit's not a table...and priority shouldn't be needed clientside...so...
+	if not ply.NexEnabled or ply.NexEnabled == false then return false end
+	datastream.Load()
+	datastream.Send(ply,"RecievePosData",RD.GetPosValue(pos))
+end
+
+function RD.FindRandGroundPos(radius,priority,value)
+	local pos = nil
+	if not radius or radius < 0 then radius = 0 end
+	local tries = 12
+	local found = 0
+	while ( ( found == 0 ) and ( tries > 0 ) ) do
+		tries = tries - 1
+		pos = VectorRand()*16384
+		if (util.IsInWorld( pos ) == true) then
+			found = 1
+			for k, v in pairs(positions) do
+				if v and v.pos and (v.pos == pos or v.pos:Distance(pos) < v.radius+radius or v.priority > priority) then
+					found = 0
+				end
+			end
+			local trace = {}
+			trace.start = pos
+			trace.endpos = pos + Vector(0,0,-16384) --To the bottom of the map + some. Hopefully.
+			trace.filter = {}
+			local tr = util.TraceLine( trace )
+			if tr.Hit and tr.HitWorld and not tr.HitSky then
+				local RD = CAF.GetAddon("Nex Mining")
+				local returntbl = RD.SetPositionValue(tr.HitPos,radius,priority,value)
+				found = 1
+			end
+			if (found == 0) then print("And we try to find a random pos again...") end
+		end
+	end
+	return returntbl
+end
+
+local function ToggleNexMiningEnable(ply,cmds,args)
 	if not ply.NexEnabled then ply.NexEnabled = false end
 	ply.NexEnabled = !ply.NexEnabled
 end
