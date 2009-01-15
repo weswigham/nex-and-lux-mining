@@ -1,7 +1,7 @@
 --[[ Serverside Custom Addon file Base ]]--
 
-AddCSLuaFile("includes/modules/Json.lua")
-AddCSLuaFile("includes/modules/cl_datastream.lua")
+--AddCSLuaFile("includes/modules/Json.lua")
+--AddCSLuaFile("includes/modules/cl_datastream.lua")
 
 local RD = {}
 
