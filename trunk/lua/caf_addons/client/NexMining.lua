@@ -1,6 +1,7 @@
 local RD = {}
 
 local status = false
+require("cl_datastream")
 
 --The Class
 /**
@@ -8,6 +9,7 @@ local status = false
 */
 function RD.__Construct()
 	RunConsoleCommand("__DO_NOT_TOUCH_OR_YOU_WILL_ERROR__")
+	datastream.Load()
 	return true , "No Implementation yet"
 end
 
@@ -66,7 +68,8 @@ CAF.RegisterAddon("Nex Mining", RD, "2")
 
 
 local positions = {}
-local function RecievePosTableData(um)
+--[[
+local function RecievePosTableData(um) --Simplifying to datastream module for speed "powered by JSon"
 	local postbl = {}
 	local postbl.pos = um:ReadVector()
 	local postbl.radius = um:ReadLong()
@@ -88,7 +91,11 @@ local function RecievePosTableData(um)
 	end
 	positions[postbl.pos] = postbl
 end 
-usermessage.Hook("RecievePosData",RecievePosTableData)
+usermessage.Hook("RecievePosData",RecievePosTableData)]]
+local function RecievePosTableData(data)
+	positions[data.pos] = data
+end
+datastream.Hook("RecievePosData","RandomGibberishGoesHereForUniqinessssss",RecievePosTableData)
 
 local function ClearPosition(um)
 	local pos = um:ReadVector()
@@ -128,7 +135,7 @@ function RD.GetNearestPosWithValue(pos,value)
 	local dist = 999999999999999999
 	local out = nil
 	for k,v in pairs(positions) do
-		if v.pos:Distance(pos) <= dist and v.value = value then 
+		if v.pos:Distance(pos) <= dist and v.value == value then 
 			dist = v.pos:Distance(pos) 
 			out = v
 		end
