@@ -119,9 +119,10 @@ end
 usermessage.Hook("RecievePosData",RecievePosTableData)]]
 
 local function RecievePosTableData(hand,id,enc,data)
-	positions[data.pos] = data
+	print("Recieving")
+	positions[tostring(data.pos)] = data
 end
-datastream.Hook("RecievePosData","RandomGibberishGoesHereForUniqinessssss",RecievePosTableData)
+datastream.Hook("RecievePosData",RecievePosTableData)
 
 local function ClearPosition(um)
 	local pos = um:ReadVector()

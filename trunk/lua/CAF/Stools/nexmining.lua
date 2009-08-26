@@ -241,5 +241,20 @@ TOOL.Devices = {
 		},
 		['class'] = "nex_reactor",
 	},
+	nex_miner = {
+		Name	= "Mining Drill",
+		type	= "nex_miner",
+		class	= "nex_miner",
+		func	= generic_nonstorage_func,
+		devices = {
+			small = {
+				Name	= "Basic Streetlight Laser Drill",
+				model	= "models/props_trainstation/tracklight01.mdl",
+				skin	= 0,
+				legacy	= false, --these two vars must be defined per ent as the old tanks (defined in external file) require different values
+			},
+		},
+		['class'] = "nex_miner",
+	},
 }
 
