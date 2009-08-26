@@ -8,11 +8,18 @@ require("datastream")
 */
 
 local status = false
+local startingnum = 10 --on average, on a map with only 1 planet, 6 out of 10 hit (even with 50 tries)
 
 function RD.__Construct()
 	if status then return true, "Already Active!" end
 	if not CAF.GetAddon("Resource Distribution") or not CAF.GetAddon("Resource Distribution").GetStatus() then return false, "Resource Distribution is Required and needs to be Active!" end
-	RD.FindRandGroundPos(50,1,{Type="nex",Depth=30,Ammount=30000})
+	
+	for i=1,startingnum do
+		local tbl = RD.FindRandGroundPos(math.random(50,200),1,{Type="liquid nex",Depth=math.random(20,40),Ammount=math.random(20000,30000)})
+		for k,v in pairs(player.GetAll()) do
+			RD.SendPosDataToClient(v,tbl.pos)
+		end
+	end
 	status = true
 	return true , "Nex Mining Activated"
 end
@@ -182,39 +189,46 @@ function RD.SendPosDataToClient(ply,pos) --mm...debating weather it should send 
 end ]]
 
 function RD.SendPosDataToClient(ply,pos) --mm...debating weather it should send value or not...perhaps ifit's not a table...and priority shouldn't be needed clientside...so...
-	if not ply.NexEnabled or ply.NexEnabled == false then return false end
+	print("Sending")
 	datastream.StreamToClients(ply,"RecievePosData",RD.GetPosValue(pos))
 end
 
 function RD.FindRandGroundPos(radius,priority,value)
+	print("I can has call? pl0x")
 	local pos = nil
 	if not radius or radius < 0 then radius = 0 end
-	local tries = 12
+	local tries = 50 --I know it sounds extreme, but when you want a pos, you WANT a pos.
 	local found = 0
 	local returntbl = {}
-	while ( ( found == 0 ) and ( tries > 0 ) ) do
-		tries = tries - 1
+	for  i=1,tries do
+		print("Trying...")
 		pos = VectorRand()*16384
 		if (util.IsInWorld( pos ) == true) then
-			found = 1
 			for k, v in pairs(positions) do
-				if v and v.pos and (v.pos == pos or v.pos:Distance(pos) < v.radius+radius or v.priority > priority) then
-					found = 0
+				print("Checking")
+				if v and v.pos and (v.pos == pos or (v.pos:Distance(pos) < v.radius+radius and v.priority > priority)) then
+					found = -1
 				end
 			end
-			local trace = {}
-			trace.start = pos
-			trace.endpos = pos + Vector(0,0,-16384) --To the bottom of the map + some. Hopefully.
-			trace.filter = {}
-			local tr = util.TraceLine( trace )
-			if tr.Hit and tr.HitWorld and not tr.HitSky then
-				local RD = CAF.GetAddon("Nex Mining")
-				returntbl = RD.SetPositionValue(tr.HitPos,radius,priority,value)
-				found = 1
+			if found ~= -1 then
+				local trace = {}
+				trace.start = pos
+				trace.endpos = pos + Vector(0,0,-16384) --To the bottom of the map + some. Hopefully.
+				trace.filter = {}
+				local tr = util.TraceLine( trace )
+				if tr.Hit and tr.HitWorld and not tr.HitSky then
+					local RD = CAF.GetAddon("Nex Mining")
+					returntbl = RD.SetPositionValue(tr.HitPos,radius,priority,value)
+					found = 1
+					break
+				end
+			else
+				found = 0
 			end
 			if (found == 0) then print("And we try to find a random pos again...") end
 		end
 	end
+	print("Returning")
 	return returntbl
 end
 
@@ -223,3 +237,12 @@ local function ToggleNexMiningEnable(ply,cmds,args)
 	ply.NexEnabled = !ply.NexEnabled
 end
 concommand.Add("__DO_NOT_TOUCH_OR_YOU_WILL_ERROR__",ToggleNexMiningEnable)
+
+local function PLayInitSpawHook(ply)
+	local Nex = CAF.GetAddon("Nex Mining")
+	for k,v in pairs(Nex.GetAllPositions()) do
+		Nex.SendPosDataToClient(ply,tostring(v.pos))
+		print("Init sending")
+	end
+end
+hook.Add("PlayerInitialSpawn","NexPlayerInitSpawnHook",PlayerInitSpawnHook)

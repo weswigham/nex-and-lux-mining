@@ -6,7 +6,6 @@ include('shared.lua')
 local Ground = 1 + 0 + 2 + 8 + 32
 local BeamLength = 512
 local Energy_Increment = 200
-local Minelevel = 200
 local Maxlength = 1024
 --local Refire_Rate = 0.6
 
@@ -14,13 +13,13 @@ function ENT:Initialize()
 	self.BaseClass.Initialize(self)
 	self.Active = 0
 	self.Minelevel = Minelevel
-	self.BeamLength = BeamLength
+	self.DrillDepth = BeamLength
 	if not (WireAddon == nil) then
 		self.WireDebugName = self.PrintName
-		self.Inputs = Wire_CreateInputs(self.Entity, { "On", "MiningPower", "Range" })
+		self.Inputs = Wire_CreateInputs(self.Entity, { "On", "Depth" })
 		self.Outputs = Wire_CreateOutputs(self.Entity, {"On" })
 	else
-		self.Inputs = {{Name="On"},{Name="MiningPower"},{Name="Range"}}
+		self.Inputs = {{Name="On"},{Name="Depth"}}
 	end
 end
 
@@ -98,7 +97,6 @@ function ENT:Mine()
 	self.energy =  RD.GetResourceAmount(self, "energy")
 	local einc = math.Round(Energy_Increment * (self.DrillDepth / 512))
 	if (self.energy >= einc) then
-		RD.ConsumeResource(self, "energy", einc)
 		local Pos = ent:GetPos()
 		local Ang = ent:GetAngles()
 		Pos = Pos+Ang:Up()*16
@@ -111,14 +109,20 @@ function ENT:Mine()
 		end
 		trace.filter = { ent }
 		local tr = util.TraceLine( trace )
+		local data = CAF.GetAddon("Nex Mining").GetPosValue(tr.HitPos)
 		
-		
-		
-		
-		
-		
-		
-		
+		if data and data.value then
+			if tr.HitPos:Distance(tr.StartPos)+data.value.Depth <= self.DrillDepth then --we've struck nex!
+			
+				RD.ConsumeResource(self, "energy", einc)
+				local ammountToTake = math.Clamp((100/data.value.Depth)*math.random(500,750),0,data.value.Ammount)
+				RD.SupplyResource(self, data.value.Type, math.floor(ammountToTake))
+				CAF.GetAddon("Nex Mining").SetPositionValue(data.pos,data.radius,data.priority,{Type=data.value.Type,Depth=data.Value.Depth,Ammount=(data.value.Ammount-math.floor(ammountToTake))})
+				if (data.value.Ammount-math.floor(ammountToTake)) <= 0 then --remove it
+					CAF.GetAddon("Nex Mining").ClearPosition(data.pos)
+				end
+			end
+		end
 		
 		local effectdata = EffectData()
 		effectdata:SetEntity( ent )
