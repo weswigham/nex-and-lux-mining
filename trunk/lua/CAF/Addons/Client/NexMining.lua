@@ -1,7 +1,8 @@
 local RD = {}
 
+require("datastream")
+
 local status = false
-require("cl_datastream")
 
 --The Class
 /**
@@ -9,8 +10,8 @@ require("cl_datastream")
 */
 function RD.__Construct()
 	RunConsoleCommand("__DO_NOT_TOUCH_OR_YOU_WILL_ERROR__")
-	datastream.Load()
-	return true , "No Implementation yet"
+	status = true
+	return true , "Nex Mining Activated"
 end
 
 /**
@@ -18,14 +19,15 @@ end
 */
 function RD.__Destruct()
 	RunConsoleCommand("__DO_NOT_TOUCH_OR_YOU_WILL_ERROR__")
-	return false , "No Implementation yet"
+	status = false
+	return true , "Nex Mining Deactivated"
 end
 
 /**
 	Get the required Addons for this Addon Class
 */
 function RD.GetRequiredAddons()
-	return {}
+	return {"Resource Distribution"}
 end
 
 /**
@@ -49,11 +51,17 @@ function RD.GetExtraOptions()
 	return {}
 end
 
-/**
-	Gets a menu from this Custom Addon Class
-*/
 function RD.GetMenu(menutype, menuname)//Name is nil for main menu, String for others
 	local data = {}
+	if not menutype then
+		--Create Help Menu
+		data["Help"] = {}
+		tmp = data["Help"];
+		tmp["Nex Mining Thread"] = {}
+		tmp["Nex Mining Thread"].localurl = "test/test.html";
+		tmp["Nex Mining Thread"].interneturl = "http://www.facepunch.com/";
+		
+	end
 	return data
 end
 
@@ -61,7 +69,24 @@ end
 	Get the Custom String Status from this Addon Class
 */
 function RD.GetCustomStatus()
-	return "Not Implemented Yet"
+	local str
+	if status == true then
+		str = "Nex Mining Online"
+	else
+		str = "Nem Mining Offline"
+	end
+	return str
+end
+
+function RD.GetDescription()
+	return {
+				"Nex Mining",
+				"A Space Mining Addon",
+				"By:",
+				"Levybreak --Coder", 
+				"SLYFo --Modeler",
+				"and Paradukes --Coder"
+			}
 end
 
 CAF.RegisterAddon("Nex Mining", RD, "2")
@@ -92,7 +117,8 @@ local function RecievePosTableData(um) --Simplifying to datastream module for sp
 	positions[postbl.pos] = postbl
 end 
 usermessage.Hook("RecievePosData",RecievePosTableData)]]
-local function RecievePosTableData(data)
+
+local function RecievePosTableData(hand,id,enc,data)
 	positions[data.pos] = data
 end
 datastream.Hook("RecievePosData","RandomGibberishGoesHereForUniqinessssss",RecievePosTableData)

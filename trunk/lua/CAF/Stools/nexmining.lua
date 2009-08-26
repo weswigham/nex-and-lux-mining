@@ -14,7 +14,7 @@ TOOL.Limited			= true
 TOOL.LimitName			= "nex_mining"
 TOOL.Limit				= 40
 
-RD2ToolSetup.SetLang("Nex Mining Devices","Create Nex Mining Devices.","Left-Click: Spawn a Device.  Reload: Repair Device.")
+CAFToolSetup.SetLang("Nex Mining Devices","Create Nex Mining Devices.","Left-Click: Spawn a Device.  Reload: Repair Device.")
 
 
 TOOL.ExtraCCVars = {
