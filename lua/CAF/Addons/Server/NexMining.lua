@@ -1,18 +1,19 @@
 --[[ Serverside Custom Addon file Base ]]--
 
---AddCSLuaFile("includes/modules/Json.lua")
---AddCSLuaFile("includes/modules/cl_datastream.lua")
-
 local RD = {}
 
 require("datastream")
 /*
 	The Constructor for this Custom Addon Class
 */
+
+local status = false
+
 function RD.__Construct()
-	if status then return false, "Already Active!" end
+	if status then return true, "Already Active!" end
 	if not CAF.GetAddon("Resource Distribution") or not CAF.GetAddon("Resource Distribution").GetStatus() then return false, "Resource Distribution is Required and needs to be Active!" end
-	datastream.Load()
+	RD.FindRandGroundPos(50,1,{Type="nex",Depth=30,Ammount=30000})
+	status = true
 	return true , "Nex Mining Activated"
 end
 
@@ -57,14 +58,23 @@ end
 	Get the Custom String Status from this Addon Class
 */
 function RD.GetCustomStatus()
-	return "Not Implemented Yet"
+	local str
+	if status == true then
+		str = "Nex Mining Online"
+	else
+		str = "Nem Mining Offline"
+	end
+	return str
 end
 
 /**
 	You can send all the files from here that you want to add to send to the client
 */
 function RD.AddResourcesToSend()
-	
+	resource.AddFile("materials/lux/lux_particle1.vmt")
+	resource.AddFile("materials/lux/lux_particle1.vtf")
+	resource.AddFile("materials/nex/nex_particle1.vmt")
+	resource.AddFile("materials/nex/nex_particle1.vtf")
 end
 
 CAF.RegisterAddon("Nex Mining", RD, "2") 
@@ -173,8 +183,7 @@ end ]]
 
 function RD.SendPosDataToClient(ply,pos) --mm...debating weather it should send value or not...perhaps ifit's not a table...and priority shouldn't be needed clientside...so...
 	if not ply.NexEnabled or ply.NexEnabled == false then return false end
-	datastream.Load()
-	datastream.Send(ply,"RecievePosData",RD.GetPosValue(pos))
+	datastream.StreamToClients(ply,"RecievePosData",RD.GetPosValue(pos))
 end
 
 function RD.FindRandGroundPos(radius,priority,value)
@@ -182,6 +191,7 @@ function RD.FindRandGroundPos(radius,priority,value)
 	if not radius or radius < 0 then radius = 0 end
 	local tries = 12
 	local found = 0
+	local returntbl = {}
 	while ( ( found == 0 ) and ( tries > 0 ) ) do
 		tries = tries - 1
 		pos = VectorRand()*16384
@@ -199,7 +209,7 @@ function RD.FindRandGroundPos(radius,priority,value)
 			local tr = util.TraceLine( trace )
 			if tr.Hit and tr.HitWorld and not tr.HitSky then
 				local RD = CAF.GetAddon("Nex Mining")
-				local returntbl = RD.SetPositionValue(tr.HitPos,radius,priority,value)
+				returntbl = RD.SetPositionValue(tr.HitPos,radius,priority,value)
 				found = 1
 			end
 			if (found == 0) then print("And we try to find a random pos again...") end
