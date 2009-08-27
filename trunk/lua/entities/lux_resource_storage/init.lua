@@ -51,7 +51,6 @@ function ENT:Damage()
 				ent:SetCloudBounds(mins,maxs)
 				ent:SetDamageAmts(-6,-1)
 				ent:SetType("lux")
-				ent.type = "lux"
 				ent:SetParent(self)
 				ent:Spawn()
 				self.gascloud = ent
@@ -84,8 +83,8 @@ function ENT:Leak()
 	if self.arma and self.arma == true then nex = RD.GetResourceAmount(self, "arma lux") end
 	if nex > 0 then
 			
-			if (math.random(1, 10) < 8) then
-				local dec = math.random(200, 2000)
+			if (math.random(1, 10) < 9) then
+				local dec = math.random(1200, 9000)
 				if self.arma and self.arma == true then
 					RD.ConsumeResource(self, "arma lux", dec)
 				else

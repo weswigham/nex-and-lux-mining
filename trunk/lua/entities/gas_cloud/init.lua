@@ -29,19 +29,19 @@ function ENT:Think()
 	for k,v in pairs(entstodamage) do
 		if self.type == "nex" then
 			if v:GetClass() == "lux_resource_storage" and (v.damaged == 1 or v.vent) then
-				v:TakeDamage(math.random(self.damage_low*10,self.damage_high*11),self:GetOwner(),self)
+				v:TakeDamage(math.random((self.damage_low or 0)*10,(self.damage_high or 1)*11),self:GetOwner(),self)
 			else
 				v:TakeDamage(math.random(self.damage_low,self.damage_high),self:GetOwner(),self)
 			end
 		else
 			if v:GetClass() == "nex_resource_storage" and (v.damaged == 1 or v.vent) then
-				v:TakeDamage(math.random(self.damage_high*-11,self.damage_low*-10),self:GetOwner(),self)
+				v:TakeDamage(math.random((self.damage_high or -1)*11,(self.damage_low or 0)*10),self:GetOwner(),self)
 			else
 				v:SetHealth(math.Clamp(v:Health()-math.random(self.damage_low,self.damage_high),0,v:GetMaxHealth()))
 			end
 		end
 	end
-	--[[
+
 	local dosomething,ent = self:CheckBounds()
 	if dosomething then
 		local efct = EffectData()
@@ -53,9 +53,11 @@ function ENT:Think()
 		if ent:GetParent() and ent:GetParent():IsValid() then
 			ent:GetParent():Remove()
 		end
-		self:GetParent():Remove()
+		if self:GetParent() and self:GetParent():IsValid() then
+			self:GetParent():Remove()
+		end
 	end
-	self:NextThink(CurTime()+0.8)]]
+	self:NextThink(CurTime()+0.8)
 end 
 
 function ENT:SetCloudBounds(mins,maxs)
@@ -86,28 +88,26 @@ function ENT:CheckBounds()
 end 
 
 function ENT:CompareBounds(ent) --Something is STILL screwed up.
+	local offset = self:LocalToWorld(self.mins)
+	local maxvals = self:LocalToWorld(self.maxs)-offset
 	for k,v in pairs(ent:GetAllWorldCorners()) do
-		if (self:LocalToWorld(self.maxs) >= v and v >= self:LocalToWorld(self.mins)) then return true end
+		local pos = v-offset
+		if pos.x > 0 and pos.y > 0 and pos.z > 0 and pos.x < maxvals.x and pos.y < maxvals.y and pos.z < maxvals.z then 
+			return true 
+		end
 	end
 	return false
 end
 
-function ENT:GetAllWorldCorners() --Most likely here
-	local worldmaxs = self:LocalToWorld(self.maxs)
-	local worldmins = self:LocalToWorld(self.mins)
+function ENT:GetAllWorldCorners()
 	local selfcorners = {}
-	table.insert(selfcorners, worldmaxs)
-	table.insert(selfcorners, Vector(worldmaxs.x,worldmaxs.y,worldmins.z))
-	table.insert(selfcorners, Vector(worldmaxs.x,worldmins.y,worldmins.z))
-	table.insert(selfcorners, Vector(worldmins.x,worldmaxs.y,worldmins.z))
-	table.insert(selfcorners, Vector(worldmins.x,worldmins.y,worldmaxs.z))
-	table.insert(selfcorners, Vector(worldmins.x,worldmaxs.y,worldmaxs.z))
-	table.insert(selfcorners, Vector(worldmaxs.x,worldmins.y,worldmaxs.z))
-	table.insert(selfcorners, worldmins)
+	table.insert(selfcorners, self:LocalToWorld(self.maxs))
+	table.insert(selfcorners, self:LocalToWorld(Vector(self.maxs.x,self.maxs.y,self.mins.z)))
+	table.insert(selfcorners, self:LocalToWorld(Vector(self.maxs.x,self.mins.y,self.mins.z)))
+	table.insert(selfcorners, self:LocalToWorld(Vector(self.mins.x,self.maxs.y,self.mins.z)))
+	table.insert(selfcorners, self:LocalToWorld(Vector(self.mins.x,self.mins.y,self.maxs.z)))
+	table.insert(selfcorners, self:LocalToWorld(Vector(self.mins.x,self.maxs.y,self.maxs.z)))
+	table.insert(selfcorners, self:LocalToWorld(Vector(self.maxs.x,self.mins.y,self.maxs.z)))
+	table.insert(selfcorners, self:LocalToWorld(self.mins))
 	return selfcorners
-end
-
-local Vector = FindMetaTable("Vector")  --Or in here.
-function Vector.__lt(op1,op2) --I hope i got this right, lol.
-	return (op1.x < op2.x and op1.y < op2.y and op1.z < op2.z)
 end 
