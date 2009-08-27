@@ -51,7 +51,6 @@ function ENT:Damage()
 				ent:SetCloudBounds(mins,maxs)
 				ent:SetDamageAmts(1,6)
 				ent:SetType("nex")
-				ent.type = "nex"
 				ent:SetParent(self)
 				ent:Spawn()
 				self.gascloud = ent
@@ -83,8 +82,8 @@ function ENT:Leak()
 	local nex = RD.GetResourceAmount(self, "liquid nex")
 	if self.arma and self.arma == true then nex = RD.GetResourceAmount(self, "arma nex") end
 	if nex > 0 then
-			if (math.random(1, 10) < 8) then
-				local dec = math.random(200, 2000)
+			if (math.random(1, 10) < 9) then
+				local dec = math.random(1200, 9000)
 				if self.arma and self.arma == true then
 				RD.ConsumeResource(self, "arma nex", dec)
 				else
@@ -98,7 +97,6 @@ function ENT:Leak()
 					ent:SetCloudBounds(mins,maxs)
 					ent:SetDamageAmts(1,6)
 					ent:SetType("nex")
-					ent.type = "nex"
 					ent:SetParent(self)
 					ent:Spawn()
 					self.gascloud = ent

@@ -257,4 +257,3 @@ TOOL.Devices = {
 		['class'] = "nex_miner",
 	},
 }
-
