@@ -17,7 +17,9 @@ function RD.__Construct()
 	for i=1,startingnum do
 		local tbl = RD.FindRandGroundPos(math.random(50,200),1,{Type="liquid nex",Depth=math.random(20,40),Ammount=math.random(20000,30000)})
 		for k,v in pairs(player.GetAll()) do
-			RD.SendPosDataToClient(v,tbl.pos)
+    if tbl and tbl.pos then
+			   RD.SendPosDataToClient(v,tbl.pos)
+    end
 		end
 	end
 	status = true
@@ -246,3 +248,5 @@ local function PLayInitSpawHook(ply)
 	end
 end
 hook.Add("PlayerInitialSpawn","NexPlayerInitSpawnHook",PlayerInitSpawnHook)
+
+

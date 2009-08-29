@@ -99,16 +99,16 @@ function ENT:Mine()
 	if (self.energy >= einc) then
 		local Pos = ent:GetPos()
 		local Ang = ent:GetAngles()
-		Pos = Pos+Ang:Up()*16
 		local trace = {}
-		trace.start = Pos
-		if string.lower(self:GetModel()) == "models/props_trainstation/tracklight01.mdl" then
-			trace.endpos = Pos+(Ang:Forward()*self.DrillDepth)
-		else
-			trace.endpos = Pos+(Ang:Up()*self.DrillDepth)
-		end
+
+    local addDrill = Vector(-40,0,0)
+    addDrill:Rotate(self:GetAngles())
+    trace.start = Pos+addDrill
+    trace.endpos = Pos+addDrill+(Ang:Up()*-1*self.DrillDepth)
+    
 		trace.filter = { ent }
 		local tr = util.TraceLine( trace )
+
 		local data = CAF.GetAddon("Nex Mining").GetPosValue(tr.HitPos)
 		
 		if data and data.value then
@@ -126,7 +126,7 @@ function ENT:Mine()
 		
 		local effectdata = EffectData()
 		effectdata:SetEntity( ent )
-		effectdata:SetOrigin( Pos )
+		effectdata:SetOrigin( Pos+addDrill )
 		effectdata:SetStart( tr.HitPos )
 		effectdata:SetAngle( Ang )
 		util.Effect( "mining_beam", effectdata, true, true )
@@ -144,3 +144,8 @@ function ENT:Think()
 	self.Entity:NextThink( CurTime() + 1 )
 	return true
 end
+
+
+
+
+
