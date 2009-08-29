@@ -253,6 +253,12 @@ TOOL.Devices = {
 				skin	= 0,
 				legacy	= false, --these two vars must be defined per ent as the old tanks (defined in external file) require different values
 			},
+    normal = {
+     Name= "Rover Attachable Drill",
+     model= "models/Slyfo/rover_drillbase.mdl",
+     skin= 0,
+     legacy= false, --these two vars must be defined per ent as the old tanks (defined in external file) require different values
+    },
 		},
 		['class'] = "nex_miner",
 	},
