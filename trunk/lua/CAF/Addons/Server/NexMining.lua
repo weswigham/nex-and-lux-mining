@@ -103,7 +103,7 @@ function RD.ClearPosition(pos)
 	local rp = RecipientFilter()
 	for k,pl in pairs(player.GetAll()) do
 		if pl.NexEnabled and pl.NexEnabled == true then
-			rp:Addlayer(pl)
+			rp:AddPlayer(pl)
 		end
 	end
 	umsg.Start("RemovePosDataClientside",rp)
@@ -248,5 +248,6 @@ local function PLayInitSpawHook(ply)
 	end
 end
 hook.Add("PlayerInitialSpawn","NexPlayerInitSpawnHook",PlayerInitSpawnHook)
+
 
 

@@ -4,15 +4,19 @@ AddCSLuaFile( "shared.lua" )
 include('shared.lua')
 
 local Ground = 1 + 0 + 2 + 8 + 32
-local BeamLength = 512
+local BeamLength = 256
 local Energy_Increment = 200
-local Maxlength = 1024
+local Maxlength = 512
 --local Refire_Rate = 0.6
+
+function ENT:Destruct()
+    self:SetNWInt("Drilling",0)
+end
+
 
 function ENT:Initialize()
 	self.BaseClass.Initialize(self)
 	self.Active = 0
-	self.Minelevel = Minelevel
 	self.DrillDepth = BeamLength
 	if not (WireAddon == nil) then
 		self.WireDebugName = self.PrintName
@@ -61,7 +65,7 @@ function ENT:TriggerInput(iname, value)
 	if (iname == "Depth") then
 		if value > Maxlength then
 			self.DrillDepth = Maxlength
-			return
+			return 
 		end
 		self.DrillDepth = value
 	end
@@ -95,7 +99,7 @@ function ENT:Mine()
 	local ent = self.Entity
 	local RD = CAF.GetAddon("Resource Distribution")
 	self.energy =  RD.GetResourceAmount(self, "energy")
-	local einc = math.Round(Energy_Increment * (self.DrillDepth / 512))
+	local einc = math.Round(Energy_Increment * (self.DrillDepth / 256))
 	if (self.energy >= einc) then
 		local Pos = ent:GetPos()
 		local Ang = ent:GetAngles()
@@ -110,27 +114,31 @@ function ENT:Mine()
 		local tr = util.TraceLine( trace )
 
 		local data = CAF.GetAddon("Nex Mining").GetPosValue(tr.HitPos)
-		
+    if data and tr.Hit then
+		      self:SetNWInt("Drilling",tr.HitPos:Distance(tr.StartPos)+math.Clamp(data.value.Depth or 0,25,150))
+    elseif tr.Hit then
+        self:SetNWInt("Drilling",tr.HitPos:Distance(tr.StartPos)+25)
+    else
+        self:SetNWInt("Drilling",0)
+    end
+    RD.ConsumeResource(self, "energy", einc)
 		if data and data.value then
 			if tr.HitPos:Distance(tr.StartPos)+data.value.Depth <= self.DrillDepth then --we've struck nex!
 			
-				RD.ConsumeResource(self, "energy", einc)
+			
 				local ammountToTake = math.Clamp((100/data.value.Depth)*math.random(500,750),0,data.value.Ammount)
 				RD.SupplyResource(self, data.value.Type, math.floor(ammountToTake))
-				CAF.GetAddon("Nex Mining").SetPositionValue(data.pos,data.radius,data.priority,{Type=data.value.Type,Depth=data.Value.Depth,Ammount=(data.value.Ammount-math.floor(ammountToTake))})
-				if (data.value.Ammount-math.floor(ammountToTake)) <= 0 then --remove it
+				CAF.GetAddon("Nex Mining").SetPositionValue(data.pos,data.radius,data.priority,{Type=data.value.Type,Depth=data.value.Depth,Ammount=(data.value.Ammount-math.floor(ammountToTake))})
+				for k,v in ipairs(player.GetAll()) do
+        CAF.GetAddon("Nex Mining").SendPosDataToClient(v,data.pos)
+    end
+
+    if (data.value.Ammount-math.floor(ammountToTake)) <= 0 then --remove it
 					CAF.GetAddon("Nex Mining").ClearPosition(data.pos)
 				end
 			end
 		end
 		
-		local effectdata = EffectData()
-		effectdata:SetEntity( ent )
-		effectdata:SetOrigin( Pos+addDrill )
-		effectdata:SetStart( tr.HitPos )
-		effectdata:SetAngle( Ang )
-		util.Effect( "mining_beam", effectdata, true, true )
-		--Msg('Thought')
 	else
 		self:TurnOff()
 	end
@@ -140,10 +148,17 @@ function ENT:Think()
 	self.BaseClass.Think(self)
 	if ( self.Active == 1 ) then
 			self:Mine()
+ else
+    self:SetNWInt("Drilling",0)
 	end
 	self.Entity:NextThink( CurTime() + 1 )
 	return true
 end
+
+
+
+
+
 
 
 
