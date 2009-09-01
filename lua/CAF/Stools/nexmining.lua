@@ -247,12 +247,6 @@ TOOL.Devices = {
 		class	= "nex_miner",
 		func	= generic_nonstorage_func,
 		devices = {
-			small = {
-				Name	= "Basic Streetlight Laser Drill",
-				model	= "models/props_trainstation/tracklight01.mdl",
-				skin	= 0,
-				legacy	= false, --these two vars must be defined per ent as the old tanks (defined in external file) require different values
-			},
     normal = {
      Name= "Rover Attachable Drill",
      model= "models/Slyfo/rover_drillbase.mdl",
@@ -262,4 +256,21 @@ TOOL.Devices = {
 		},
 		['class'] = "nex_miner",
 	},
+    nex_holo_finder = {
+        Name= "Holographic Nex Finder",
+        type= "nex_holo_finder",
+        class= "nex_holo_finder",
+        func= generic_nonstorage_func,
+        devices = {
+            normal = {
+                Name= "Point-Sphere Projection Module",
+                model= "models/Slyfo/util_tracker.mdl",
+                skin= 0,
+                legacy= false, --these two vars must be defined per ent as the old tanks (defined in external file) require different values
+            },
+        },
+        ['class'] = "nex_holo_finder",
+    },
 }
+
+
