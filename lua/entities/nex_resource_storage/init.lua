@@ -82,27 +82,27 @@ function ENT:Leak()
 	local nex = RD.GetResourceAmount(self, "liquid nex")
 	if self.arma and self.arma == true then nex = RD.GetResourceAmount(self, "arma nex") end
 	if nex > 0 then
-			if (math.random(1, 10) < 9) then
-				local dec = math.random(1200, 9000)
-				if self.arma and self.arma == true then
+		if (math.random(1, 10) < 9) then
+			local dec = math.random(500, 2000)
+			if self.arma and self.arma == true then
 				RD.ConsumeResource(self, "arma nex", dec)
-				else
+			else
 				RD.ConsumeResource(self, "liquid nex", dec)
-				end
-				if not self.gascloud or not self.gascloud:IsValid() then
-					local mins = self:OBBMins()*3
-					local maxs = self:OBBMaxs()*3
-					local ent = ents.Create("gas_cloud")
-					ent:SetPos(self:GetPos())
-					ent:SetCloudBounds(mins,maxs)
-					ent:SetDamageAmts(1,6)
-					ent:SetType("nex")
-					ent:SetParent(self)
-					ent:Spawn()
-					self.gascloud = ent
-					ent.dependant = self
-				end
 			end
+			if not self.gascloud or not self.gascloud:IsValid() then
+				local mins = self:OBBMins()*3
+				local maxs = self:OBBMaxs()*3
+				local ent = ents.Create("gas_cloud")
+				ent:SetPos(self:GetPos())
+				ent:SetCloudBounds(mins,maxs)
+				ent:SetDamageAmts(1,6)
+				ent:SetType("nex")
+				ent:SetParent(self)
+				ent:Spawn()
+				self.gascloud = ent
+				ent.dependant = self
+			end
+		end
 	end
 end
 
@@ -124,14 +124,14 @@ end
 function ENT:UpdateWireOutput()
 	local RD = CAF.GetAddon("Resource Distribution")
 	if self.arma and self.arma == true then
-	local nex = RD.GetResourceAmount(self, "arma nex")
-	local maxnex = RD.GetNetworkCapacity(self, "arma nex")
-	Wire_TriggerOutput(self.Entity, "arma nex", nex)
-	Wire_TriggerOutput(self.Entity, "arma nex", maxnex)
+		local nex = RD.GetResourceAmount(self, "arma nex")
+		local maxnex = RD.GetNetworkCapacity(self, "arma nex")
+		Wire_TriggerOutput(self.Entity, "arma nex", nex)
+		Wire_TriggerOutput(self.Entity, "arma nex", maxnex)
 	else
-	local nex = RD.GetResourceAmount(self, "liquid nex")
-	local maxnex = RD.GetNetworkCapacity(self, "liquid nex")
-	Wire_TriggerOutput(self.Entity, "liquid nex", nex)
-	Wire_TriggerOutput(self.Entity, "Max liquid nex", maxnex)
+		local nex = RD.GetResourceAmount(self, "liquid nex")
+		local maxnex = RD.GetNetworkCapacity(self, "liquid nex")
+		Wire_TriggerOutput(self.Entity, "liquid nex", nex)
+		Wire_TriggerOutput(self.Entity, "Max liquid nex", maxnex)
 	end
 end 

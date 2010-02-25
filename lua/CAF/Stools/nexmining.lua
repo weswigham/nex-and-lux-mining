@@ -30,7 +30,7 @@ end
 
 local function nex_resource_storage_func(ent,type,sub_type,devinfo,Extra_Data,ent_extras)
 	local mass = 100
-	local maxhealth = 100
+	local maxhealth = 400
 	local phys = ent:GetPhysicsObject()
 	local vol = phys:GetVolume()
 	vol = math.Round(vol)
@@ -40,7 +40,7 @@ end
 
 local function lux_resource_storage_func(ent,type,sub_type,devinfo,Extra_Data,ent_extras)
 	local mass = 100
-	local maxhealth = 100
+	local maxhealth = 400
 	local phys = ent:GetPhysicsObject()
 	local vol = phys:GetVolume()
 	vol = math.Round(vol)
@@ -50,7 +50,7 @@ end
 
 local function arma_nex_resource_storage_func(ent,type,sub_type,devinfo,Extra_Data,ent_extras)
 	local mass = 100
-	local maxhealth = 100
+	local maxhealth = 400
 	local phys = ent:GetPhysicsObject()
 	local vol = phys:GetVolume()
 	vol = math.Round(vol)
@@ -61,7 +61,7 @@ end
 
 local function arma_lux_resource_storage_func(ent,type,sub_type,devinfo,Extra_Data,ent_extras)
 	local mass = 100
-	local maxhealth = 100
+	local maxhealth = 400
 	local phys = ent:GetPhysicsObject()
 	local vol = phys:GetVolume()
 	vol = math.Round(vol)
@@ -72,12 +72,12 @@ end
 
 local function generic_nonstorage_func(ent,type,sub_type,devinfo,Extra_Data,ent_extras)
 	local mass = 100
-	local maxhealth = 100
+	local maxhealth = 400
 	CAF.GetAddon("Resource Distribution").RegisterNonStorageDevice(ent)
 	local phys = ent:GetPhysicsObject()
 	local vol = phys:GetVolume()
 	vol = math.Round(vol)
-	ent.burnRate = math.Clamp(vol/500,10,90000)
+	ent.burnRate = math.Clamp(vol/5000,25,5000)
 	return mass, maxhealth
 end
 

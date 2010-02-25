@@ -171,7 +171,7 @@ function RD.GetNearestPosWithValue(pos,value)
 end
 
 function RD.GetAllPositions()
-	return positions
+	return table.Copy(positions)
 end
 
 function RD.GetAllPositionsString()
